@@ -63,3 +63,67 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+const gallery = document.querySelector('.js-gallery');
+const lightbox = document.querySelector('.lightbox');
+const lightboxImg = document.querySelector('.lightbox__image');
+const lightboxBtn = document.querySelector('.lightbox__button');
+const activeLightbox = document.querySelector('.is-open');
+const backdrop = document.querySelector('.lightbox__overlay');
+
+const galleryImgs = galleryItems.map(e => {
+  const galleryItem = document.createElement('li');
+  galleryItem.setAttribute('class', 'gallery__item');
+  const galleryLink = document.createElement('a');
+  galleryLink.setAttribute('href', e.original);
+  galleryLink.setAttribute('class', 'gallery__link');
+  const galleryImg = document.createElement('img');
+  galleryImg.setAttribute('src', e.preview);
+  galleryImg.setAttribute('data-source', e.original);
+  galleryImg.setAttribute('alt', e.description);
+  galleryImg.setAttribute('class', 'gallery__image');
+  gallery.appendChild(galleryItem);
+  galleryItem.appendChild(galleryLink);
+  galleryLink.appendChild(galleryImg);
+  return;
+});
+
+gallery.addEventListener('click', onClick);
+lightboxBtn.addEventListener('click', onCloseModal);
+backdrop.addEventListener('click', onCloseBackdrop);
+
+
+
+function onClick(e) {
+  window.addEventListener('keydown', onCloseEsc);
+
+  if(e.target.nodeName != 'IMG') {
+    return;
+  };
+  e.preventDefault();
+
+  lightbox.classList.add('is-open');
+  lightboxImg.setAttribute('src', e.target.dataset.source);
+  lightboxImg.setAttribute('alt', e.target.description);
+};
+
+function onCloseModal() {
+  window.removeEventListener('keydown', onCloseEsc);
+
+  lightbox.classList.remove('is-open');
+  lightboxImg.removeAttribute('src');
+  lightboxImg.removeAttribute('alt');
+};
+
+function onCloseBackdrop (e) {
+  if (e.currentTarget === e.target) {
+    onCloseModal();
+  };
+};
+
+function onCloseEsc (e) {
+  console.log(e.code);
+  if (e.code === 'Escape') {
+  onCloseModal();
+  };
+};
